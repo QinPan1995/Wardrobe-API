@@ -1,0 +1,63 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+spring:
+  application:
+    name: wardrobe-api
+  
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/wardrobe?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: your_password
+  
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+# 静态资源访问配置
+  mvc:
+    static-path-pattern: /upload/**
+  web:
+    resources:
+      static-locations: file:${file.upload-path}
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.wardrobe.model.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT配置
+jwt:
+  secret: your_jwt_secret_key
+  expiration: 604800 # Token有效期7天
+
+# 微信小程序配置
+wx:
+  miniapp:
+    appid: your_appid
+    secret: your_secret 
+
+# 文件上传配置
+file:
+  upload-path: /path/to/upload/
+  access-path: /upload/ 
