@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /api
+#    context-path: /api
     multipart:
       enabled: true
       max-file-size: 5MB
@@ -54,8 +54,8 @@ jwt:
 # 微信小程序配置
 wx:
   miniapp:
-    appid: your_appid
-    secret: your_secret 
+    appid: wx5c20fcf5ac7910e6
+    secret: 45c8a30261a89215a4b4d52fae276f5f
 
 # 文件上传配置
 file:
