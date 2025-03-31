@@ -53,6 +53,7 @@ public class ClothesController {
     public Result<String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
         String imageUrl = fileUtil.uploadImage(file);
         System.out.println("第一次测试");
+        System.out.println("第二次测试");
         return Result.success(imageUrl);
     }
 } 
