@@ -9,11 +9,17 @@ import com.wardrobe.model.entity.Clothes;
 import com.wardrobe.model.entity.User;
 import com.wardrobe.service.ClothesService;
 import com.wardrobe.service.UserService;
+import com.wardrobe.util.SeasonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
+@Slf4j
 @Service
 public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> implements ClothesService {
 
@@ -27,9 +33,9 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
             throw new BusinessException("衣物名称不能为空");
         }
         if (!StringUtils.hasText(clothesDTO.getCategory())) {
-            throw new BusinessException("衣物分类不能为空");
+            throw new BusinessException("衣物类型不能为空");
         }
-        if (!StringUtils.hasText(clothesDTO.getSeason())) {
+        if (CollectionUtils.isEmpty(clothesDTO.getSeasons())) {
             throw new BusinessException("适用季节不能为空");
         }
 
@@ -37,8 +43,21 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
         
         Clothes clothes = new Clothes();
         BeanUtils.copyProperties(clothesDTO, clothes);
+
         clothes.setUserId(currentUser.getId());
-        
+
+        //特殊处理
+        List<String> seasons = clothesDTO.getSeasons();
+        if (!CollectionUtils.isEmpty(seasons)) {
+            //seasons排个序
+            SeasonUtil.sortSeasons(seasons);
+            // 按照自定义顺序排序
+            clothes.setSeason(String.join(",", seasons));
+        }
+        List<String> imageUrl = clothesDTO.getImageUrl();
+        if (!CollectionUtils.isEmpty(imageUrl)) {
+            clothes.setImageUrl(String.join(",", imageUrl));
+        }
         save(clothes);
         return clothes;
     }
@@ -74,25 +93,8 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
         if (clothes == null) {
             throw new BusinessException("衣物不存在或无权限修改");
         }
-        
-        if (StringUtils.hasText(clothesDTO.getName())) {
-            clothes.setName(clothesDTO.getName());
-        }
-        if (StringUtils.hasText(clothesDTO.getCategory())) {
-            clothes.setCategory(clothesDTO.getCategory());
-        }
-        if (StringUtils.hasText(clothesDTO.getSeason())) {
-            clothes.setSeason(clothesDTO.getSeason());
-        }
-        if (StringUtils.hasText(clothesDTO.getColor())) {
-            clothes.setColor(clothesDTO.getColor());
-        }
-        if (StringUtils.hasText(clothesDTO.getImageUrl())) {
-            clothes.setImageUrl(clothesDTO.getImageUrl());
-        }
-        if (StringUtils.hasText(clothesDTO.getDescription())) {
-            clothes.setDescription(clothesDTO.getDescription());
-        }
+
+        BeanUtils.copyProperties(clothesDTO, clothes);
         
         updateById(clothes);
         return clothes;

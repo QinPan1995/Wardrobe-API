@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wardrobe.common.FileUtil;
 import com.wardrobe.common.Result;
 import com.wardrobe.model.dto.ClothesDTO;
+import com.wardrobe.model.dto.FileInfoDTO;
 import com.wardrobe.model.entity.Clothes;
 import com.wardrobe.service.ClothesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,9 @@ public class ClothesController {
     }
 
     @PostMapping("/upload")
-    public Result<String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        String imageUrl = fileUtil.uploadImage(file);
-        return Result.success(imageUrl);
+    public Result<FileInfoDTO> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+        FileInfoDTO fileInfoDTO = fileUtil.uploadImage(file);
+
+        return Result.success(fileInfoDTO);
     }
 } 

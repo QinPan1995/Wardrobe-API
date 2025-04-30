@@ -1,5 +1,6 @@
 package com.wardrobe.common;
 
+import com.wardrobe.model.dto.FileInfoDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,17 +18,17 @@ public class FileUtil {
     @Value("${file.access-path}")
     private String accessPath;
 
-    public String uploadImage(MultipartFile file) throws IOException {
+    public FileInfoDTO uploadImage(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String filename = UUID.randomUUID().toString() + extension;
+        String filename = UUID.randomUUID() + extension;
         
-        File dest = new File(uploadPath + filename);
+        File dest = new File(uploadPath +accessPath+ filename);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
         
         file.transferTo(dest);
-        return accessPath + filename;
+        return new FileInfoDTO(dest);
     }
 } 
