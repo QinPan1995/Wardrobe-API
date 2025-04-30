@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 @Data
 public class FileInfoDTO {
     private String name; // 文件名
-    private long size; // 文件大小（字节）
+    private Long size; // 文件大小（字节）
     private String type; // MIME 类型
     private String lastModified; // 最后修改时间
     private String url; // 文件存储路径

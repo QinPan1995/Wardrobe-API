@@ -2,6 +2,7 @@ package com.wardrobe.enums;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum SeasonEnum {
     SPRING("春", "spring", 0),
@@ -84,8 +85,7 @@ public enum SeasonEnum {
      */
     public static List<String> getAllChineseNames() {
         return Arrays.stream(values())
-                .map(SeasonEnum::getChineseName)
-                .toList();
+                .map(SeasonEnum::getChineseName).collect(Collectors.toList());
     }
 
     /**
@@ -93,8 +93,7 @@ public enum SeasonEnum {
      */
     public static List<String> getAllEnglishNames() {
         return Arrays.stream(values())
-                .map(SeasonEnum::getEnglishName)
-                .toList();
+                .map(SeasonEnum::getEnglishName).collect(Collectors.toList());
     }
 
     /**

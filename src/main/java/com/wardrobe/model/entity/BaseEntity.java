@@ -1,7 +1,7 @@
 package com.wardrobe.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,13 +19,14 @@ public class BaseEntity {
     /**
      * 主键ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId
     private Long id;
 
     /**
      * 软删除标记
      */
-    private Boolean deleted;
+    @TableLogic
+    private Integer deleted;
 
     /**
      * 创建时间
@@ -35,5 +36,5 @@ public class BaseEntity {
     /**
      * 更新时间
      */
-    private LocalDateTime updatedTime;
+    private LocalDateTime updateTime;
 }

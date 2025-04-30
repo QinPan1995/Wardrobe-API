@@ -1,12 +1,12 @@
 package com.wardrobe.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wardrobe.common.FileUtil;
 import com.wardrobe.common.Result;
 import com.wardrobe.model.dto.ClothesDTO;
-import com.wardrobe.model.dto.FileInfoDTO;
 import com.wardrobe.model.entity.Clothes;
+import com.wardrobe.model.vo.ClothesMainPage;
 import com.wardrobe.service.ClothesService;
+import com.wardrobe.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,15 +21,15 @@ public class ClothesController {
     private ClothesService clothesService;
 
     @Autowired
-    private FileUtil fileUtil;
+    private FileService fileService;
 
     @PostMapping
     public Result<Clothes> addClothes(@RequestBody ClothesDTO clothesDTO) {
         return Result.success(clothesService.addClothes(clothesDTO));
     }
 
-    @GetMapping
-    public Result<Page<Clothes>> getClothes(
+    @PostMapping("/page")
+    public Result<Page<ClothesMainPage>> getClothes(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String category,
@@ -51,9 +51,7 @@ public class ClothesController {
     }
 
     @PostMapping("/upload")
-    public Result<FileInfoDTO> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        FileInfoDTO fileInfoDTO = fileUtil.uploadImage(file);
-
-        return Result.success(fileInfoDTO);
+    public Result<Long> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+        return Result.success(fileService.uploadFile(file));
     }
 } 

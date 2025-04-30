@@ -40,7 +40,8 @@ public class ClothesDTO {
     /**
      * 图片链接（可选，用于记录衣物的图片）
      */
-    private List<String> imageUrl;
+//    private List<String> imageUrl;
+    private List<Long> fileIds;
 
     /**
      * 价格（使用 BigDecimal 避免精度丢失）
