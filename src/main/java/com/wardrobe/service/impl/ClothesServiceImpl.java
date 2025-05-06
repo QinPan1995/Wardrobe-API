@@ -58,7 +58,7 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
 
         clothes.setUserId(currentUser.getId());
 
-        //特殊处理
+        // 特殊处理
         List<String> seasons = clothesDTO.getSeasons();
         if (!CollectionUtils.isEmpty(seasons)) {
             //seasons排个序
