@@ -8,7 +8,7 @@ import com.wardrobe.model.dto.ClothesDTO;
 import com.wardrobe.model.entity.Clothes;
 import com.wardrobe.model.entity.User;
 import com.wardrobe.model.entity.WardrobeFile;
-import com.wardrobe.model.vo.ClothesMainPage;
+import com.wardrobe.model.vo.ClothesMainVo;
 import com.wardrobe.service.ClothesService;
 import com.wardrobe.service.FileService;
 import com.wardrobe.service.UserService;
@@ -78,7 +78,7 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
     }
 
     @Override
-    public Page<ClothesMainPage> getClothes(Integer page, Integer size, String category, String season) {
+    public Page<ClothesMainVo> getClothes(Integer page, Integer size, String category, String season) {
         Page<Clothes> clothesPage = lambdaQuery()
                 .eq(Clothes::getUserId, userService.getCurrentUser().getId())
                 .eq(StringUtils.hasText(category), Clothes::getCategory, category)
@@ -87,32 +87,44 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
                 .page(new Page<>(page, size));
 
         List<Clothes> records = clothesPage.getRecords();
-        List<ClothesMainPage> clothesMainPages = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(records)) {
-            //获取所有衣物id
-            List<Long> clotheIds = records.stream().map(Clothes::getId).collect(Collectors.toList());
-            //获取所有衣物的图片
-            HashMap<Long,List<WardrobeFile>> longWardrobeFileHashMap = fileService.associateFilesWithClothesByClothesIds(clotheIds);
-            //wardrobeFiles转为
-            // 填充文件信息
-            for (Clothes record : records) {
-                Long id = record.getId();
-                List<WardrobeFile> wardrobeFileList = Optional.ofNullable(longWardrobeFileHashMap.get(id)).orElse(new ArrayList<>());
-                List<String> images = wardrobeFileList.stream().map(WardrobeFile::getUrl).collect(Collectors.toList());
-                ClothesMainPage clothesMainPage = new ClothesMainPage();
-                clothesMainPage.setId(id);
-                clothesMainPage.setImages(images);
-                clothesMainPages.add(clothesMainPage);
-            }
-        }
 
-        Page<ClothesMainPage> clothesMainPagePage = new Page<>();
-        clothesMainPagePage.setRecords(clothesMainPages);
+        Page<ClothesMainVo> clothesMainPagePage = new Page<>();
+        clothesMainPagePage.setRecords(clothesMains(records));
         clothesMainPagePage.setCurrent(clothesPage.getCurrent());
         clothesMainPagePage.setTotal(clothesPage.getTotal());
         clothesMainPagePage.setSize(clothesPage.getSize());
         clothesMainPagePage.setPages(clothesPage.getPages());
         return clothesMainPagePage;
+    }
+
+    /**
+     *  clothesMainPages
+     * @param list
+     * @return
+     */
+    @Override
+    public List<ClothesMainVo> clothesMains(List<Clothes> list) {
+        List<ClothesMainVo> clothesMainPages = new ArrayList<>();
+        if (CollectionUtils.isEmpty(list)) {
+            return clothesMainPages;
+        }
+        //获取所有衣物id
+        List<Long> clotheIds = list.stream().map(Clothes::getId).collect(Collectors.toList());
+        //获取所有衣物的图片
+        HashMap<Long, List<WardrobeFile>> longWardrobeFileHashMap = fileService.associateFilesWithClothesByClothesIds(clotheIds);
+        //wardrobeFiles转为
+        // 填充文件信息
+        for (Clothes clothes : list) {
+            Long id = clothes.getId();
+            List<WardrobeFile> wardrobeFileList = Optional.ofNullable(longWardrobeFileHashMap.get(id)).orElse(new ArrayList<>());
+            List<String> images = wardrobeFileList.stream().map(WardrobeFile::getUrl).collect(Collectors.toList());
+            ClothesMainVo clothesMainPage = new ClothesMainVo();
+            clothesMainPage.setId(id);
+            clothesMainPage.setCategory(clothes.getCategory());
+            clothesMainPage.setImages(images);
+            clothesMainPages.add(clothesMainPage);
+        }
+        return clothesMainPages;
     }
 
     @Override
@@ -155,5 +167,17 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
         if (!success) {
             throw new BusinessException("衣物不存在或无权限删除");
         }
+    }
+
+    @Override
+    public List<ClothesMainVo> allClotheByUserId(Long userId) {
+        List<ClothesMainVo> clothesMainPages = new ArrayList<>();
+        List<Clothes> list = lambdaQuery()
+                .eq(Clothes::getUserId, userId)
+                .list();
+        if (CollectionUtils.isEmpty(list)){
+            return clothesMainPages;
+        }
+        return clothesMains(list);
     }
 } 

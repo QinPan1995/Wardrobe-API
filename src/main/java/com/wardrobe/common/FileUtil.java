@@ -15,19 +15,16 @@ public class FileUtil {
     @Value("${file.upload-path}")
     private String uploadPath;
 
-    @Value("${file.access-path}")
-    private String accessPath;
-
     public FileInfoDTO uploadFile(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String filename = UUID.randomUUID() + extension;
-        
-        File dest = new File(uploadPath + filename);
+
+        File dest = new File(uploadPath  + filename);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
-        
+
         file.transferTo(dest);
         return new FileInfoDTO(dest);
     }

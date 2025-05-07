@@ -15,10 +15,15 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ClothesMainPage extends BaseEntity {
+public class ClothesMainVo extends BaseEntity {
 
     /**
      * 图片列表
      */
     private List<String> images;
+    /**
+     * 衣物类型（单选）
+     * 示例值：上衣, 裤子, 裙子, 外套, 连衣裙, 鞋子, 配饰等
+     */
+    private String category;
 }

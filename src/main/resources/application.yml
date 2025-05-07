@@ -59,5 +59,4 @@ wx:
 
 # 文件上传配置
 file:
-  upload-path: //Users/youniverse/Wardrobe-API/Wardrobe-API/src/main/resources/
-  access-path: /upload/ 
+  upload-path: //Users/youniverse/Wardrobe-API/Wardrobe-API/src/main/resources/upload/
