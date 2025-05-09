@@ -16,22 +16,17 @@ public interface ClothesFileMapper extends BaseMapper<ClothesFile> {
             "WHERE cf.clothes_id = #{clothesId}")
     List<WardrobeFile> getFilesByClothesId(Long clothesId);
 
-    @Select("SELECT f.* FROM file f " +
-            "JOIN clothes_file cf ON f.id = cf.file_id " +
-            "WHERE cf.clothes_id = #{clothesId} AND cf.is_main = 1")
-    WardrobeFile getMainFileByClothesId(Long clothesId);
-
-    default void delByClothesId(Long clothesId){
+    default int delByClothesId(Long clothesId){
         LambdaQueryWrapper<ClothesFile> clothesFileLambdaQueryWrapper = new LambdaQueryWrapper<>();
         clothesFileLambdaQueryWrapper.eq(ClothesFile::getClothesId, clothesId);
         // 删除原有关联
-        delete(clothesFileLambdaQueryWrapper);
+        return delete(clothesFileLambdaQueryWrapper);
     }
 
     default List<ClothesFile> listByClothesIds(List<Long> clothesIds){
         LambdaQueryWrapper<ClothesFile> clothesFileLambdaQueryWrapper = new LambdaQueryWrapper<>();
         clothesFileLambdaQueryWrapper.in(ClothesFile::getClothesId, clothesIds);
-        // 删除原有关联
+        // 查询关联
         return selectList(clothesFileLambdaQueryWrapper);
     }
 }

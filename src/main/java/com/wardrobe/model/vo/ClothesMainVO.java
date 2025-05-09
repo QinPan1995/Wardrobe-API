@@ -15,7 +15,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ClothesMainVo extends BaseEntity {
+public class ClothesMainVO extends BaseEntity {
 
     /**
      * 图片列表

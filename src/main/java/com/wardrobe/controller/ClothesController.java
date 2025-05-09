@@ -4,7 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wardrobe.common.Result;
 import com.wardrobe.model.dto.ClothesDTO;
 import com.wardrobe.model.entity.Clothes;
-import com.wardrobe.model.vo.ClothesMainVo;
+import com.wardrobe.model.vo.ClothesDetailVO;
+import com.wardrobe.model.vo.ClothesMainVO;
 import com.wardrobe.service.ClothesService;
 import com.wardrobe.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,13 @@ public class ClothesController {
         return Result.success(clothesService.addClothes(clothesDTO));
     }
 
+    @GetMapping("/{id}")
+    public Result<ClothesDetailVO> getClothes(@PathVariable Long id) {
+        return Result.success(clothesService.getClothes(id));
+    }
+
     @PostMapping("/page")
-    public Result<Page<ClothesMainVo>> getClothes(
+    public Result<Page<ClothesMainVO>> getClothes(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String category,

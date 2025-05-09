@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -79,14 +80,26 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
 
     @Override
     public HashMap<Long, List<WardrobeFile>> associateFilesWithClothesByClothesIds(List<Long> clothesIds) {
-        List<ClothesFile> clothesFiles = clothesFileMapper.listByClothesIds(clothesIds);
-        List<Long> fileIds = clothesFiles.stream().map(ClothesFile::getFileId).collect(Collectors.toList());
-        List<WardrobeFile> wardrobeFiles = listByIds(fileIds);
         HashMap<Long, List<WardrobeFile>> fileMap = new HashMap<>();
-        for (ClothesFile clothesFile : clothesFiles) {
-            Long fileId = clothesFile.getFileId();
-            Long clothesId = clothesFile.getClothesId();
-            List<WardrobeFile> wardrobeFileList = wardrobeFiles.stream().filter(wardrobeFile -> wardrobeFile.getId().equals(fileId)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(clothesIds)){
+            return fileMap;
+        }
+        //获取所有相关衣物与图片映射信息
+        List<ClothesFile> clothesFileAll = clothesFileMapper.listByClothesIds(clothesIds);
+        //获取图片id
+        List<Long> fileIdAll = clothesFileAll.stream().map(ClothesFile::getFileId).collect(Collectors.toList());
+        //获取所有图片信息
+        List<WardrobeFile> wardrobeFileAll = listByIds(fileIdAll);
+        for (Long clothesId : clothesIds) {
+            //获取当前衣物图片
+            List<ClothesFile> clothesFileList = clothesFileAll.stream().filter(o -> clothesId.equals(o.getClothesId())).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(clothesFileList)){
+                continue;
+            }
+            //获取当前衣物图片id
+            List<Long> fileIds = clothesFileList.stream().map(ClothesFile::getFileId).collect(Collectors.toList());
+            //获取当前衣物图片信息
+            List<WardrobeFile> wardrobeFileList = wardrobeFileAll.stream().filter(wardrobeFile -> fileIds.contains(wardrobeFile.getId())).collect(Collectors.toList());
             fileMap.put(clothesId, wardrobeFileList);
         }
         return fileMap;

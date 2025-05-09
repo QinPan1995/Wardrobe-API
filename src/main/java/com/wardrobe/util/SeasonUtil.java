@@ -2,6 +2,7 @@ package com.wardrobe.util;
 
 import com.wardrobe.enums.SeasonEnum;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,5 +31,25 @@ public class SeasonUtil {
                 return Integer.MAX_VALUE;
             }
         }));
+    }
+
+    /**
+     * 将季节列表转换为以逗号分隔的文本
+     * @param seasons
+     * @return
+     */
+    public static String seasonsToString(List<String> seasons) {
+        if (seasons == null || seasons.isEmpty()) return null;
+        return String.join(",", seasons);
+    }
+
+    /**
+     * 将逗号分隔的文本转换为季节列表
+     * @param seasons
+     * @return
+     */
+    public static List<String> stringToSeasons(String seasons) {
+        if (seasons == null || seasons.isEmpty()) return null;
+        return Arrays.asList(seasons.split(","));
     }
 }

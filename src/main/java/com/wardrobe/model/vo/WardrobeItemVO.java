@@ -10,8 +10,10 @@ import lombok.Data;
  */
 
 @Data
-public class WardrobeItemVo {
+public class WardrobeItemVO {
 
+    //id
+    private Long id;
     //图片
     private String image;
 }

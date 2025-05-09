@@ -1,7 +1,7 @@
 package com.wardrobe.controller;
 
 import com.wardrobe.common.Result;
-import com.wardrobe.model.vo.WardrobeVo;
+import com.wardrobe.model.vo.WardrobeVO;
 import com.wardrobe.service.WardrobeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +25,7 @@ public class WardrobeController {
     private WardrobeService wardrobeService;
 
     @PostMapping
-    public Result<List<WardrobeVo>> allWardrobe() {
+    public Result<List<WardrobeVO>> allWardrobe() {
         return Result.success(wardrobeService.allWardrobe());
     }
 }
