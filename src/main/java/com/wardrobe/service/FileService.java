@@ -13,9 +13,13 @@ public interface FileService extends IService<WardrobeFile> {
 
     void deleteFile(Long id);
 
+    void deleteFilesByClothesId(Long clothesId);
+
+    void deleteFilesByClothesId(Long clothesId, List<Long> fileIds);
+
     List<WardrobeFile> getFilesByClothesId(Long clothesId);
 
-    void associateFilesWithClothes(Long clothesId, List<Long> fileIds, boolean associateOld);
+    void associateFilesWithClothes(Long clothesId, List<Long> fileIds, boolean add);
 
     HashMap<Long, List<WardrobeFile>> associateFilesWithClothesByClothesIds(List<Long> clothesIds);
 } 

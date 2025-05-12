@@ -2,6 +2,7 @@ package com.wardrobe.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wardrobe.common.FileUtil;
+import com.wardrobe.common.exception.BusinessException;
 import com.wardrobe.mapper.ClothesFileMapper;
 import com.wardrobe.mapper.WardrobeFileMapper;
 import com.wardrobe.model.dto.FileInfoDTO;
@@ -18,6 +19,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,9 +43,11 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
 
         User currentUser = userService.getCurrentUser();
 
+        String fileName = org.springframework.util.StringUtils.getFilename(fileInfoDTO.getUrl());
         WardrobeFile wardrobeFile = new WardrobeFile();
         BeanUtils.copyProperties(fileInfoDTO, wardrobeFile);
-
+        //将/Users/youniverse/Wardrobe-API/Wardrobe-API/src/main/resources/static/替换为http://localhost:8080/
+        wardrobeFile.setUrl("http://localhost:8080/upload/"+fileName);
         wardrobeFile.setUserId(currentUser.getId());
         save(wardrobeFile);
 
@@ -61,6 +66,44 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
         removeById(id);
     }
 
+    @Transactional
+    @Override
+    public void deleteFilesByClothesId(Long clothesId) {
+        deleteFilesByClothesId(clothesId,new ArrayList<>());
+    }
+
+    /**
+     * 删除衣物图片
+     *
+     * @param clothesId
+     */
+    @Transactional
+    @Override
+    public void deleteFilesByClothesId(Long clothesId, List<Long> fileIds) {
+        //获取存在映射
+        List<ClothesFile> wardrobeFileList = clothesFileMapper.listByClothesIds(Collections.singletonList(clothesId));
+        if (CollectionUtils.isEmpty(wardrobeFileList)) {
+            log.error("衣物映射不存在");
+            return;
+        }
+        //删除映射
+        int removeNum = clothesFileMapper.deleteBatchIds(wardrobeFileList);
+        if (removeNum <= 0) {
+            log.error("衣物映射删除失败");
+            return;
+        }
+        //删除图片
+        List<Long> removeFileIds = wardrobeFileList.stream().map(ClothesFile::getFileId).filter(fileId -> !fileIds.contains(fileId)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(removeFileIds)){
+            return;
+        }
+        boolean removed = removeBatchByIds(removeFileIds);
+        if (!removed) {
+            log.error("衣物图片删除失败");
+            throw new BusinessException("删除失败");
+        }
+    }
+
     @Override
     public List<WardrobeFile> getFilesByClothesId(Long clothesId) {
         return clothesFileMapper.getFilesByClothesId(clothesId);
@@ -68,7 +111,11 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
 
     @Override
     @Transactional
-    public void associateFilesWithClothes(Long clothesId, List<Long> fileIds, boolean associateOld) {
+    public void associateFilesWithClothes(Long clothesId, List<Long> fileIds, boolean add) {
+        if (!add) {
+            //删除关联
+            deleteFilesByClothesId(clothesId,fileIds);
+        }
         // 创建新关联
         for (Long fileId : fileIds) {
             ClothesFile clothesFile = new ClothesFile();
@@ -81,7 +128,7 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
     @Override
     public HashMap<Long, List<WardrobeFile>> associateFilesWithClothesByClothesIds(List<Long> clothesIds) {
         HashMap<Long, List<WardrobeFile>> fileMap = new HashMap<>();
-        if (CollectionUtils.isEmpty(clothesIds)){
+        if (CollectionUtils.isEmpty(clothesIds)) {
             return fileMap;
         }
         //获取所有相关衣物与图片映射信息
@@ -93,7 +140,7 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
         for (Long clothesId : clothesIds) {
             //获取当前衣物图片
             List<ClothesFile> clothesFileList = clothesFileAll.stream().filter(o -> clothesId.equals(o.getClothesId())).collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(clothesFileList)){
+            if (CollectionUtils.isEmpty(clothesFileList)) {
                 continue;
             }
             //获取当前衣物图片id

@@ -44,7 +44,7 @@ public class ClothesDetailVO extends BaseEntity {
     /**
      * 图片列表
      */
-    private List<String> images;
+    private List<WardrobeImageVO> images;
 
     /**
      * 价格（使用 BigDecimal 避免精度丢失）

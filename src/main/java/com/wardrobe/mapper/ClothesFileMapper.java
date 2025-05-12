@@ -13,7 +13,7 @@ import java.util.List;
 public interface ClothesFileMapper extends BaseMapper<ClothesFile> {
     @Select("SELECT f.* FROM file f " +
             "JOIN clothes_file cf ON f.id = cf.file_id " +
-            "WHERE cf.clothes_id = #{clothesId}")
+            "WHERE f.deleted=0 and cf.deleted=0 and cf.clothes_id = #{clothesId}")
     List<WardrobeFile> getFilesByClothesId(Long clothesId);
 
     default int delByClothesId(Long clothesId){
