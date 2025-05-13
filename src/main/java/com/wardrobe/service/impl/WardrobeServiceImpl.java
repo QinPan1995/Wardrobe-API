@@ -42,7 +42,7 @@ public class WardrobeServiceImpl implements WardrobeService {
         List<WardrobeVO> wardrobeVOS = new ArrayList<>();
         //获取所有分类
         List<Category> allCategories = categoryService.getAllCategories();
-        if (CollectionUtils.isEmpty(allCategories)){
+        if (CollectionUtils.isEmpty(allCategories)) {
             return wardrobeVOS;
         }
         //获取
@@ -60,11 +60,15 @@ public class WardrobeServiceImpl implements WardrobeService {
             for (ClothesMainVO clothesMainVo : clothesMainVOList) {
                 WardrobeItemVO wardrobeItemVo = new WardrobeItemVO();
                 List<String> images = clothesMainVo.getImages();
-                if (CollectionUtils.isEmpty(images)){
-                    continue;
+                String image;
+                if (CollectionUtils.isEmpty(images)) {
+                    //默认图片
+                    image = "http://localhost:8080/upload/default.svg";
+                } else {
+                    image = images.get(0);
                 }
                 wardrobeItemVo.setId(clothesMainVo.getId());
-                wardrobeItemVo.setImage(images.get(0));
+                wardrobeItemVo.setImage(image);
                 wardrobes.add(wardrobeItemVo);
             }
             wardrobeVo.setWardrobes(wardrobes);

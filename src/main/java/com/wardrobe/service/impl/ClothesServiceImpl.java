@@ -55,7 +55,7 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
         //获取衣物图片
         HashMap<Long, List<WardrobeFile>> longWardrobeFileHashMap = fileService.associateFilesWithClothesByClothesIds(Collections.singletonList(clothes.getId()));
         List<WardrobeFile> wardrobeFileList = Optional.ofNullable(longWardrobeFileHashMap.get(id)).orElse(new ArrayList<>());
-        List<WardrobeImageVO>  wardrobeImageVOList = BeanCopyUtil.copyProperties(wardrobeFileList, WardrobeImageVO.class);
+        List<WardrobeImageVO> wardrobeImageVOList = BeanCopyUtil.copyProperties(wardrobeFileList, WardrobeImageVO.class);
         ClothesDetailVO clothesDetailVO = new ClothesDetailVO();
         clothesDetailVO.setId(clothes.getId());
         clothesDetailVO.setName(clothes.getName());
@@ -154,10 +154,7 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
         saveOrUpdate(clothes);
 
         // 关联文件
-        if (!CollectionUtils.isEmpty(clothesDTO.getFileIds())) {
-            // 建立关联
-            fileService.associateFilesWithClothes(clothes.getId(), clothesDTO.getFileIds(), add);
-        }
+        fileService.associateFilesWithClothes(clothes.getId(), clothesDTO.getFileIds(), add);
         return clothes;
     }
 

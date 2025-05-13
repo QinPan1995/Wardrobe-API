@@ -24,6 +24,15 @@ public class ClothesController {
     @Autowired
     private FileService fileService;
 
+    @PostMapping("/page")
+    public Result<Page<ClothesMainVO>> getClothes(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String season) {
+        return Result.success(clothesService.getClothes(page, size, category, season));
+    }
+
     @PostMapping
     public Result<Clothes> addClothes(@RequestBody ClothesDTO clothesDTO) {
         return Result.success(clothesService.addClothes(clothesDTO));
@@ -32,15 +41,6 @@ public class ClothesController {
     @GetMapping("/{id}")
     public Result<ClothesDetailVO> getClothes(@PathVariable Long id) {
         return Result.success(clothesService.getClothes(id));
-    }
-
-    @PostMapping("/page")
-    public Result<Page<ClothesMainVO>> getClothes(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String season) {
-        return Result.success(clothesService.getClothes(page, size, category, season));
     }
 
     @PutMapping("/{id}")

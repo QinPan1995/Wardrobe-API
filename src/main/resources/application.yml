@@ -13,8 +13,9 @@ spring:
   
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://120.76.206.153:3306/wardrobe?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: admin
+    #url: jdbc:mysql://120.76.206.153:3306/wardrobe?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://rm-wz9axj300oq5vfgvdjo.mysql.rds.aliyuncs.com:3306/wardrobe?allowMultiQueries=true&characterEncoding=utf-8&useSSL=false&rewriteBatchedStatements=true
+    username: admin1
     password: ymumwKotcoq(
   
   jackson:

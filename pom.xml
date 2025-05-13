@@ -21,6 +21,8 @@
         <hutool.version>5.8.9</hutool.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.1</jaxb-runtime.version>
+        <orika-core.version>1.5.4</orika-core.version>
+        <commons-collection-version>4.1</commons-collection-version>
     </properties>
 
     <dependencies>
@@ -72,6 +74,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 删除认证会报错 -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -81,6 +84,18 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${jaxb-runtime.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-core</artifactId>
+            <version>${orika-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collection-version}</version>
         </dependency>
     </dependencies>
 

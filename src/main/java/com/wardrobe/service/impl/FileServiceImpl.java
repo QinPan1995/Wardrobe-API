@@ -19,10 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +44,7 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
         WardrobeFile wardrobeFile = new WardrobeFile();
         BeanUtils.copyProperties(fileInfoDTO, wardrobeFile);
         //将/Users/youniverse/Wardrobe-API/Wardrobe-API/src/main/resources/static/替换为http://localhost:8080/
-        wardrobeFile.setUrl("http://localhost:8080/upload/"+fileName);
+        wardrobeFile.setUrl("http://localhost:8080/upload/" + fileName);
         wardrobeFile.setUserId(currentUser.getId());
         save(wardrobeFile);
 
@@ -69,7 +66,7 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
     @Transactional
     @Override
     public void deleteFilesByClothesId(Long clothesId) {
-        deleteFilesByClothesId(clothesId,new ArrayList<>());
+        deleteFilesByClothesId(clothesId, new ArrayList<>());
     }
 
     /**
@@ -93,8 +90,8 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
             return;
         }
         //删除图片
-        List<Long> removeFileIds = wardrobeFileList.stream().map(ClothesFile::getFileId).filter(fileId -> !fileIds.contains(fileId)).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(removeFileIds)){
+        List<Long> removeFileIds = wardrobeFileList.stream().map(ClothesFile::getFileId).filter(fileId -> !Optional.ofNullable(fileIds).orElse(new ArrayList<>()).contains(fileId)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(removeFileIds)) {
             return;
         }
         boolean removed = removeBatchByIds(removeFileIds);
@@ -102,6 +99,17 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
             log.error("衣物图片删除失败");
             throw new BusinessException("删除失败");
         }
+    }
+
+    public static void main(String[] args) {
+        List<Long> a = null;
+//        a.add(1L);
+//        a.add(2L);
+        List<Long> b = new ArrayList<>();
+        b.add(1L);
+        b.add(3L);
+        List<Long> collect = b.stream().filter(v -> !a.contains(v)).collect(Collectors.toList());
+        System.out.println(collect);
     }
 
     @Override
@@ -114,7 +122,10 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
     public void associateFilesWithClothes(Long clothesId, List<Long> fileIds, boolean add) {
         if (!add) {
             //删除关联
-            deleteFilesByClothesId(clothesId,fileIds);
+            deleteFilesByClothesId(clothesId, fileIds);
+        }
+        if (CollectionUtils.isEmpty(fileIds)) {
+            return;
         }
         // 创建新关联
         for (Long fileId : fileIds) {
@@ -133,6 +144,9 @@ public class FileServiceImpl extends ServiceImpl<WardrobeFileMapper, WardrobeFil
         }
         //获取所有相关衣物与图片映射信息
         List<ClothesFile> clothesFileAll = clothesFileMapper.listByClothesIds(clothesIds);
+        if (CollectionUtils.isEmpty(clothesFileAll)){
+            return fileMap;
+        }
         //获取图片id
         List<Long> fileIdAll = clothesFileAll.stream().map(ClothesFile::getFileId).collect(Collectors.toList());
         //获取所有图片信息
