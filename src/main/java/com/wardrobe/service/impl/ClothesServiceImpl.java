@@ -16,6 +16,7 @@ import com.wardrobe.service.ClothesService;
 import com.wardrobe.service.FileService;
 import com.wardrobe.service.UserService;
 import com.wardrobe.util.BeanCopyUtil;
+import com.wardrobe.util.OrikaUtil;
 import com.wardrobe.util.SeasonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -113,9 +114,7 @@ public class ClothesServiceImpl extends ServiceImpl<ClothesMapper, Clothes> impl
             Long id = clothes.getId();
             List<WardrobeFile> wardrobeFileList = Optional.ofNullable(longWardrobeFileHashMap.get(id)).orElse(new ArrayList<>());
             List<String> images = wardrobeFileList.stream().map(WardrobeFile::getUrl).collect(Collectors.toList());
-            ClothesMainVO clothesMainPage = new ClothesMainVO();
-            clothesMainPage.setId(id);
-            clothesMainPage.setCategory(clothes.getCategory());
+            ClothesMainVO clothesMainPage = OrikaUtil.convert(clothes, ClothesMainVO.class);
             clothesMainPage.setImages(images);
             clothesMainPages.add(clothesMainPage);
         }

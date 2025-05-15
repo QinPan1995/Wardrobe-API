@@ -1,6 +1,7 @@
 package com.wardrobe.controller;
 
 import com.wardrobe.common.Result;
+import com.wardrobe.model.vo.WardrobeStatsVO;
 import com.wardrobe.model.vo.WardrobeVO;
 import com.wardrobe.service.WardrobeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,4 +29,10 @@ public class WardrobeController {
     public Result<List<WardrobeVO>> allWardrobe() {
         return Result.success(wardrobeService.allWardrobe());
     }
+
+    @PostMapping("/stats")
+    public Result<List<WardrobeStatsVO>> stats() {
+        return Result.success(wardrobeService.stats());
+    }
+
 }

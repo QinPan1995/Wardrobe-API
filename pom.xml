@@ -22,7 +22,8 @@
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.1</jaxb-runtime.version>
         <orika-core.version>1.5.4</orika-core.version>
-        <commons-collection-version>4.1</commons-collection-version>
+        <commons-collection.version>4.1</commons-collection.version>
+        <jackson-datatype-jsr310.version>2.13.4</jackson-datatype-jsr310.version>
     </properties>
 
     <dependencies>
@@ -95,8 +96,15 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>${commons-collection-version}</version>
+            <version>${commons-collection.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-datatype-jsr310.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

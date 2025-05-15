@@ -1,5 +1,6 @@
 package com.wardrobe.service;
 
+import com.wardrobe.model.vo.WardrobeStatsVO;
 import com.wardrobe.model.vo.WardrobeVO;
 
 import java.util.List;
@@ -14,4 +15,6 @@ import java.util.List;
 
 public interface WardrobeService {
     List<WardrobeVO> allWardrobe();
+
+    List<WardrobeStatsVO> stats();
 }

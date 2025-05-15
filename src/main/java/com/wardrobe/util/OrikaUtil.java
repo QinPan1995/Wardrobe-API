@@ -1,17 +1,8 @@
 package com.wardrobe.util;
 
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
-import ma.glasnost.orika.metadata.ClassMapBuilder;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * @author ：luke
@@ -23,148 +14,55 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class OrikaUtil {
 
-    private static final MapperFactory FACTORY = new DefaultMapperFactory.Builder().build();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * 缓存实例集合
-     */
-    private static final Map<String, MapperFacade> CACHE_MAPPER = new ConcurrentHashMap<>();
-
-    private final MapperFacade mapper;
-
-    public OrikaUtil(MapperFacade mapper) {
-        this.mapper = mapper;
+    static {
+        objectMapper.registerModule(new JavaTimeModule());
+        // 配置忽略未知字段
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**
-     * 转换实体函数
-     *
-     * @param sourceEntity 源实体
-     * @param targetClass  目标类对象
-     * @param refMap       配置源类与目标类不同字段名映射
-     * @param <S>          源泛型
-     * @param <T>          目标泛型
-     * @return 目标实体
-     */
-    public static <S, T> T convert(S sourceEntity, Class<T> targetClass, Map<String, String> refMap) {
-        if (sourceEntity == null) {
-            return null;
-        }
-        return classMap(sourceEntity.getClass(), targetClass, refMap).map(sourceEntity, targetClass);
-    }
-
-    /**
-     * 转换实体函数
-     *
-     * @param sourceEntity 源实体
-     * @param targetClass  目标类对象
-     * @param <S>          源泛型
-     * @param <T>          目标泛型
-     * @return 目标实体
-     */
-    public static <S, T> T convert(S sourceEntity, Class<T> targetClass) {
-        return convert(sourceEntity, targetClass, null);
-    }
-
-    /**
-     * 转换实体集合函数
-     *
-     * @param sourceEntityList 源实体集合
-     * @param targetClass      目标类对象
-     * @param refMap           配置源类与目标类不同字段名映射
-     * @param <S>              源泛型
-     * @param <T>              目标泛型
-     * @return 目标实体集合
-     */
-    public static <S, T> List<T> convertList(List<S> sourceEntityList, Class<T> targetClass, Map<String, String> refMap) {
-        if (sourceEntityList == null) {
-            return null;
-        }
-        if (sourceEntityList.size() == 0) {
-            return new ArrayList<>(0);
-        }
-        return classMap(sourceEntityList.get(0).getClass(), targetClass, refMap).mapAsList(sourceEntityList, targetClass);
-    }
-
-    /**
-     * 转换实体集合函数
-     *
-     * @param sourceEntityList 源实体集合
-     * @param targetClass      目标类对象
-     * @param <S>              源泛型
-     * @param <T>              目标泛型
-     * @return 目标实体集合
-     */
-    public static <S, T> List<T> convertList(List<S> sourceEntityList, Class<T> targetClass) {
-        return convertList(sourceEntityList, targetClass, null);
-    }
-
-    /**
-     * 属性名称一致可用
-     *
-     * @param source 源数据
-     * @param target 目标对象
-     * @return OrikaUtils
-     */
-    private static <V, P> OrikaUtil classMap(Class<V> source, Class<P> target) {
-        return classMap(source, target, null);
-    }
-
-    /**
-     * 属性名称不一致可用
-     *
-     * @param source 原对象
-     * @param target 目标对象
-     * @return OrikaUtils
-     */
-    private static synchronized <V, P> OrikaUtil classMap(Class<V> source, Class<P> target, Map<String, String> refMap) {
-        String key = source.getCanonicalName() + ":" + target.getCanonicalName();
-        if (CACHE_MAPPER.containsKey(key)) {
-            return new OrikaUtil(CACHE_MAPPER.get(key));
-        }
-        register(source, target, refMap);
-        MapperFacade mapperFacade = FACTORY.getMapperFacade();
-        CACHE_MAPPER.put(key, mapperFacade);
-
-        return new OrikaUtil(mapperFacade);
-    }
-
-    /**
-     * 注册属性
-     *
-     * @param source 源类
-     * @param target 目标类
-     * @param refMap 属性转换
-     */
-    public static <V, P> void register(Class<V> source, Class<P> target, Map<String, String> refMap) {
-        if (MapUtils.isEmpty(refMap)) {
-            FACTORY.classMap(source, target).byDefault().register();
-        } else {
-            ClassMapBuilder<V, P> classMapBuilder = FACTORY.classMap(source, target);
-            refMap.forEach(classMapBuilder::field);
-            classMapBuilder.byDefault().register();
-        }
-    }
-
-    /**
-     * Orika复制对象
-     *
-     * @param source 源数据
-     * @param target 目标对象
-     * @return target
-     */
-    private <V, P> P map(V source, Class<P> target) {
-        return mapper.map(source, target);
-    }
-
-    /**
-     * 复制List
+     * 深拷贝 - 同类型对象
      *
      * @param source 源对象
-     * @param target 目标对象
-     * @return P
+     * @param clazz  目标对象的类型
+     * @param <T>    对象类型
+     * @return 深拷贝后的对象
      */
-    private <V, P> List<P> mapAsList(List<V> source, Class<P> target) {
-        return CollectionUtils.isEmpty(source) ? Collections.emptyList() : mapper.mapAsList(source, target);
+    public static <T> T deepCopy(T source, Class<T> clazz) {
+        if (source == null) {
+            return null;
+        }
+
+        try {
+            String json = objectMapper.writeValueAsString(source);
+            return objectMapper.readValue(json, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException("深拷贝失败", e);
+        }
+    }
+
+    /**
+     * 不同类型对象的拷贝
+     *
+     * @param source 源对象
+     * @param targetClass 目标对象的类型
+     * @param <S> 源对象类型
+     * @param <T> 目标对象类型
+     * @return 转换后的目标对象
+     */
+    public static <S, T> T convert(S source, Class<T> targetClass) {
+        if (source == null) {
+            return null;
+        }
+
+        try {
+            // 将源对象序列化为 JSON，再反序列化为目标对象
+            String json = objectMapper.writeValueAsString(source);
+            return objectMapper.readValue(json, targetClass);
+        } catch (Exception e) {
+            throw new RuntimeException("对象转换失败", e);
+        }
     }
 }
