@@ -93,7 +93,7 @@ public class WardrobeServiceImpl implements WardrobeService {
             wardrobeStatsVO.setType(wardrobeVO.getType());
             List<WardrobeItemVO> wardrobes = wardrobeVO.getWardrobes();
             wardrobeStatsVO.setTotalCount(getTotalCount(wardrobes));
-            wardrobeStatsVO.setTotalValue(getTotalValue(wardrobes));
+            wardrobeStatsVO.setTotalAmount(geTotalAmount(wardrobes));
             wardrobeStatsVO.setAvgAmount(getAvgAmount(wardrobes));
             wardrobeStatsVO.setMaxAmount(getMaxAmount(wardrobes));
             wardrobeStatsVO.setMinAmount(getMinAmount(wardrobes));
@@ -118,7 +118,7 @@ public class WardrobeServiceImpl implements WardrobeService {
     /**
      * 获取总价值
      */
-    private BigDecimal getTotalValue(List<WardrobeItemVO> wardrobes) {
+    private BigDecimal geTotalAmount(List<WardrobeItemVO> wardrobes) {
         if (CollectionUtils.isEmpty(wardrobes)) {
             return BigDecimal.ZERO;
         }
@@ -156,7 +156,7 @@ public class WardrobeServiceImpl implements WardrobeService {
         if (CollectionUtils.isEmpty(wardrobes)) {
             return BigDecimal.ZERO;
         }
-        BigDecimal totalValue = getTotalValue(wardrobes);
+        BigDecimal totalValue = geTotalAmount(wardrobes);
         int totalCount = getTotalCount(wardrobes);
         if (totalCount == 0) {
             return BigDecimal.ZERO;
