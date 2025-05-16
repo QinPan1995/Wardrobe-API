@@ -10,15 +10,15 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ClothesDetailVO extends BaseEntity {
+public class ItemDetailVO extends BaseEntity {
 
     /**
-     * 衣物名称（例如：白衬衫、牛仔裤）
+     * 物品名称（例如：白衬衫、牛仔裤）
      */
     private String name;
 
     /**
-     * 衣物类型（单选）
+     * 物品类型（单选）
      * 示例值：上衣, 裤子, 裙子, 外套, 连衣裙, 鞋子, 配饰等
      */
     private String category;
@@ -44,7 +44,7 @@ public class ClothesDetailVO extends BaseEntity {
     /**
      * 图片列表
      */
-    private List<WardrobeImageVO> images;
+    private List<ItemImageVO> images;
 
     /**
      * 价格（使用 BigDecimal 避免精度丢失）

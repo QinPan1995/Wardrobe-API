@@ -16,7 +16,7 @@ public class WardrobeVO {
 
     private String title; // 分类标题
     private String icon; // 分类图标类名
-    private int count; // 衣物数量
+    private int count; // 物品数量
     private String type; // 分类类型
     private List<WardrobeItemVO> wardrobes; // 衣柜明细
 }

@@ -2,12 +2,12 @@ package com.wardrobe.service.impl;
 
 import com.wardrobe.model.entity.Category;
 import com.wardrobe.model.entity.User;
-import com.wardrobe.model.vo.ClothesMainVO;
+import com.wardrobe.model.vo.ItemMainVO;
 import com.wardrobe.model.vo.WardrobeItemVO;
 import com.wardrobe.model.vo.WardrobeStatsVO;
 import com.wardrobe.model.vo.WardrobeVO;
 import com.wardrobe.service.CategoryService;
-import com.wardrobe.service.ClothesService;
+import com.wardrobe.service.ItemService;
 import com.wardrobe.service.UserService;
 import com.wardrobe.service.WardrobeService;
 import com.wardrobe.util.OrikaUtil;
@@ -40,7 +40,7 @@ public class WardrobeServiceImpl implements WardrobeService {
     private UserService userService;
 
     @Autowired
-    private ClothesService clothesService;
+    private ItemService itemService;
 
     @Override
     public List<WardrobeVO> allWardrobe() {
@@ -53,17 +53,17 @@ public class WardrobeServiceImpl implements WardrobeService {
         //获取
         User currentUser = userService.getCurrentUser();
         //获取相关衣服
-        List<ClothesMainVO> clothesMainVOS = clothesService.allClotheByUserId(currentUser.getId());
+        List<ItemMainVO> itemMainVOS = itemService.allClotheByUserId(currentUser.getId());
         for (Category category : allCategories) {
             WardrobeVO wardrobeVo = new WardrobeVO();
             wardrobeVo.setTitle(category.getName());
             wardrobeVo.setIcon("");
             wardrobeVo.setType(category.getName());
 
-            List<ClothesMainVO> clothesMainVOList = clothesMainVOS.stream().filter(o -> category.getName().equals(o.getCategory())).collect(Collectors.toList());
+            List<ItemMainVO> itemMainVOList = itemMainVOS.stream().filter(o -> category.getName().equals(o.getCategory())).collect(Collectors.toList());
             List<WardrobeItemVO> wardrobes = new ArrayList<>();
-            for (ClothesMainVO clothesMainVo : clothesMainVOList) {
-                List<String> images = clothesMainVo.getImages();
+            for (ItemMainVO itemMainVo : itemMainVOList) {
+                List<String> images = itemMainVo.getImages();
                 String image;
                 if (CollectionUtils.isEmpty(images)) {
                     //默认图片
@@ -71,12 +71,12 @@ public class WardrobeServiceImpl implements WardrobeService {
                 } else {
                     image = images.get(0);
                 }
-                WardrobeItemVO wardrobeItemVo = OrikaUtil.convert(clothesMainVo, WardrobeItemVO.class);
+                WardrobeItemVO wardrobeItemVo = OrikaUtil.convert(itemMainVo, WardrobeItemVO.class);
                 wardrobeItemVo.setImage(image);
                 wardrobes.add(wardrobeItemVo);
             }
             wardrobeVo.setWardrobes(wardrobes);
-            wardrobeVo.setCount(clothesMainVOList.size());
+            wardrobeVo.setCount(itemMainVOList.size());
             wardrobeVOS.add(wardrobeVo);
         }
         return wardrobeVOS;

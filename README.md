@@ -33,7 +33,7 @@ CREATE TABLE user (
     UNIQUE KEY uk_openid (openid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
-CREATE TABLE clothes (
+CREATE TABLE item (
     id BIGINT NOT NULL AUTO_INCREMENT,
     user_id BIGINT NOT NULL COMMENT '用户ID',
     name VARCHAR(64) NOT NULL COMMENT '衣物名称',

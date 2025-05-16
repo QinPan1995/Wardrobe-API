@@ -1,6 +1,6 @@
 package com.wardrobe.model.vo;
 
-import com.wardrobe.model.entity.Clothes;
+import com.wardrobe.model.entity.Item;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class WardrobeItemVO extends Clothes {
+public class WardrobeItemVO extends Item {
 
     //图片
     private String image;

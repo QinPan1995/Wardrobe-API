@@ -9,16 +9,16 @@ import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("clothes")
-public class Clothes extends BaseEntity{
+@TableName("item")
+public class Item extends BaseEntity{
     private Long userId;
     /**
-     * 衣物名称（例如：白衬衫、牛仔裤）
+     * 物品名称（例如：白衬衫、牛仔裤）
      */
     private String name;
 
     /**
-     * 衣物类型（单选）
+     * 物品类型（单选）
      * 示例值：上衣, 裤子, 裙子, 外套, 连衣裙, 鞋子, 配饰等
      */
     private String category;

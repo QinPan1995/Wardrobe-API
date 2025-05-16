@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("file")
-public class WardrobeFile extends BaseEntity{
+@TableName("item_image")
+public class ItemImage extends BaseEntity{
     private Long userId;
     private String name;
     private Long size;

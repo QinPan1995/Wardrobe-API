@@ -17,14 +17,14 @@ import java.time.format.DateTimeFormatter;
  */
 
 @Data
-public class FileInfoDTO {
-    private String name; // 文件名
+public class ItemImageInfoDTO {
+    private String name; // 图片名
     private Long size; // 文件大小（字节）
-    private String type; // MIME 类型
+    private String type; // 类型
     private String lastModified; // 最后修改时间
     private String url; // 文件存储路径
 
-    public FileInfoDTO(File file) throws IOException {
+    public ItemImageInfoDTO(File file) throws IOException {
         this.name = file.getName();
         this.size = file.length();
         this.type = Files.probeContentType(file.toPath());

@@ -7,14 +7,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class ClothesDTO {
+public class ItemDTO {
     /**
-     * 衣物名称（例如：白衬衫、牛仔裤）
+     * 物品名称（例如：白衬衫、牛仔裤）
      */
     private String name;
 
     /**
-     * 衣物类型（单选）
+     * 物品类型（单选）
      * 示例值：上衣, 裤子, 裙子, 外套, 连衣裙, 鞋子, 配饰等
      */
     private String category;
@@ -38,7 +38,7 @@ public class ClothesDTO {
     private String brand;
 
     /**
-     * 图片链接（可选，用于记录衣物的图片）
+     * 图片链接（可选，用于记录物品的图片）
      */
 //    private List<String> imageUrl;
     private List<Long> fileIds;
