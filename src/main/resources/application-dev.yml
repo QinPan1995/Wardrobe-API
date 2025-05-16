@@ -1,15 +1,11 @@
 server:
-  port: 8080
+#  port: 8080
   servlet:
 #    context-path: /api
     multipart:
       enabled: true
       max-file-size: 5MB
       max-request-size: 10MB
-
-spring:
-  application:
-    name: wardrobe-api
   
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
