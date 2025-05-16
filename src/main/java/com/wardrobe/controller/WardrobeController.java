@@ -25,11 +25,19 @@ public class WardrobeController {
     @Autowired
     private WardrobeService wardrobeService;
 
+    /**
+     * Wardrobe 列表
+     * @return
+     */
     @PostMapping
     public Result<List<WardrobeVO>> allWardrobe() {
         return Result.success(wardrobeService.allWardrobe());
     }
 
+    /**
+     *  Wardrobe 统计
+     * @return
+     */
     @PostMapping("/stats")
     public Result<List<WardrobeStatsVO>> stats() {
         return Result.success(wardrobeService.stats());
