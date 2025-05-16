@@ -80,7 +80,6 @@ public class ItemImageServiceImpl extends ServiceImpl<ItemImageMapper, ItemImage
         //获取存在映射
         List<ItemImageRef> wardrobeFileList = itemImageRefMapper.listByItemIds(Collections.singletonList(itemId));
         if (CollectionUtils.isEmpty(wardrobeFileList)) {
-            log.error("物品映射不存在");
             return;
         }
         //删除映射
