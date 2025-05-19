@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 修改APP_NAME为云效上的应用名
-APP_NAME=wardrobe
+APP_NAME=wardrobe-api
 
 
 PROG_NAME=$0
